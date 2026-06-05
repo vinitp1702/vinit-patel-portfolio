@@ -44,7 +44,7 @@
       {id:2, title:"Deer in Velvet",                 loc:"Inglewood Bird Sanctuary, Calgary AB",  cat:"Mammal Portrait", story:"Eye contact across the boundary between wild and human",                      img:"photos/wildlife/w02_deer_in_velvet.jpg",           tall:true },
       {id:3, title:"Ducks on Misty River",           loc:"Inglewood Bird Sanctuary, Calgary AB",  cat:"Atmospheric",     story:"Two goldeneyes gliding through morning fog and golden light",                img:"photos/wildlife/w03_ducks_misty_river.jpg",        tall:true },
       {id:4, title:"Black Bear",                     loc:"Laurentian University, Sudbury ON",     cat:"Mammal",          story:"Urban wildlife — the moment before a decision is made",                      img:"photos/wildlife/w04_black_bear.jpg",               tall:true },
-      {id:5, title:"Jack Pines at Last Light",          loc:"Lauzon Lake, Algoma Mills ON",          cat:"Landscape",       story:"Three jack pines cut into an amber sky — the last fire of a northern Ontario evening burning behind them", img:"photos/wildlife/w05_pine_silhouettes_sunset.jpg", tall:false},
+      {id:5, title:"Jack Pines at Last Light",       loc:"Lauzon Lake, Algoma Mills ON",          cat:"Landscape",       story:"Three jack pines cut into an amber sky — the last fire of a northern Ontario evening burning behind them", img:"photos/wildlife/w05_pine_silhouettes_sunset.jpg", tall:false},
       {id:6, title:"Clark's Nutcracker",             loc:"Banff National Park, AB",               cat:"Bird Portrait",   story:"Up close with one of the Rockies' most intelligent birds",                   img:"photos/wildlife/w06_clarks_nutcracker.jpg",        tall:true },
       {id:7, title:"Red-winged Blackbird",           loc:"Prince's Island Park, Calgary AB",      cat:"Bird",            story:"The red-orange epaulette flash against bare winter branches",               img:"photos/wildlife/w07_redwinged_blackbird.jpg",      tall:true },
       {id:8, title:"Peyto Lake",                     loc:"Banff National Park, AB",               cat:"Landscape",       story:"The impossible turquoise of glacial melt in the Rockies",                    img:"photos/wildlife/w08_peyto_lake.jpg",               tall:true },
@@ -101,26 +101,17 @@
 
     function packRows(photos,aspects,containerW,targetH){
       if(!containerW||!photos.length)return[];
-      const rows=[];
-      let bucket=[];
-      let bucketNatW=0;
+      const rows=[];let bucket=[];let bucketNatW=0;
       for(const p of photos){
         const ar=aspects[p.id]||(p.tall?2/3:3/2);
         const natW=ar*targetH;
         const gapAdd=bucket.length>0?GAP:0;
         if(bucket.length>0&&bucketNatW+gapAdd+natW>containerW+0.5){
           rows.push(buildRow(bucket,aspects,containerW,targetH,false));
-          bucket=[p];
-          bucketNatW=natW;
-        }else{
-          bucket.push(p);
-          bucketNatW+=gapAdd+natW;
-        }
+          bucket=[p];bucketNatW=natW;
+        }else{bucket.push(p);bucketNatW+=gapAdd+natW;}
       }
-      if(bucket.length){
-        const isLast=true;
-        rows.push(buildRow(bucket,aspects,containerW,targetH,isLast));
-      }
+      if(bucket.length)rows.push(buildRow(bucket,aspects,containerW,targetH,true));
       return rows;
     }
 
@@ -154,13 +145,12 @@
       .nav-email{font-family:'Space Mono',monospace;font-size:7.5px;letter-spacing:.08em;color:#7a6a50;text-decoration:none;transition:color .25s;margin-left:10px;white-space:nowrap;}
       .nav-email:hover{color:#c8a55a;}
       .hero-pg{position:relative;overflow:hidden;background:#060402;}
-      .hero-char{position:absolute;top:0;left:50%;transform:translateX(-44%);height:98vh;width:auto;max-width:none;z-index:1;mask-image:linear-gradient(to top,transparent 0%,black 32%,black 96%,transparent 100%);-webkit-mask-image:linear-gradient(to top,transparent 0%,black 32%,black 96%,transparent 100%);}
-      .hero-smoke{position:absolute;inset:0;pointer-events:none;z-index:2;}.v-grey{background:#0a0908;}.v-amber{background:#070602;}.v-grey .hero-smoke{background:radial-gradient(ellipse 90% 55% at 50% 115%,rgba(22,20,18,1),transparent),radial-gradient(ellipse 55% 48% at 50% 100%,rgba(38,34,30,.9),transparent),radial-gradient(ellipse 60% 100% at -1% 50%,rgba(12,10,9,.78),transparent),radial-gradient(ellipse 60% 100% at 101% 50%,rgba(12,10,9,.78),transparent),radial-gradient(ellipse 44% 32% at 18% 76%,rgba(55,50,44,.55),transparent),radial-gradient(ellipse 40% 28% at 80% 80%,rgba(48,43,38,.48),transparent),radial-gradient(ellipse 70% 22% at 50% 48%,rgba(28,25,22,.25),transparent),radial-gradient(ellipse 100% 12% at 50% 0%,rgba(10,8,7,.5),transparent);}.v-crimson .hero-smoke{background:radial-gradient(ellipse 100% 10% at 50% 0%,rgba(6,4,2,.55),transparent),radial-gradient(ellipse 130% 55% at 50% 115%,rgba(6,4,2,1),transparent),radial-gradient(ellipse 28% 100% at -1% 50%,rgba(6,4,2,.82),transparent),radial-gradient(ellipse 28% 100% at 101% 50%,rgba(6,4,2,.82),transparent),radial-gradient(ellipse 52% 40% at 10% 80%,rgba(115,8,0,.62),transparent),radial-gradient(ellipse 48% 34% at 85% 85%,rgba(95,6,0,.52),transparent),radial-gradient(ellipse 36% 22% at 30% 94%,rgba(135,10,0,.4),transparent),radial-gradient(ellipse 36% 22% at 70% 92%,rgba(105,8,0,.34),transparent);}.v-amber .hero-smoke{background:radial-gradient(ellipse 100% 10% at 50% 0%,rgba(7,6,2,.55),transparent),radial-gradient(ellipse 130% 52% at 50% 115%,rgba(5,4,2,1),transparent),radial-gradient(ellipse 30% 100% at -1% 50%,rgba(5,4,2,.8),transparent),radial-gradient(ellipse 30% 100% at 101% 50%,rgba(5,4,2,.8),transparent),radial-gradient(ellipse 55% 42% at 12% 78%,rgba(105,68,5,.52),transparent),radial-gradient(ellipse 50% 36% at 82% 82%,rgba(88,56,4,.44),transparent),radial-gradient(ellipse 80% 28% at 50% 55%,rgba(145,98,10,.13),transparent),radial-gradient(ellipse 50% 18% at 50% 30%,rgba(165,115,15,.08),transparent);}.hero-compass{position:absolute;left:50%;top:50%;transform:translate(-50%,-55%);width:clamp(200px,30vw,390px);height:clamp(200px,30vw,390px);opacity:.1;pointer-events:none;z-index:3;}.smoke-picker{position:absolute;top:57px;left:52px;z-index:7;display:flex;align-items:center;gap:14px;}.smoke-lbl{font-family:'Cinzel',serif;font-size:6.5px;letter-spacing:.45em;color:rgba(200,165,90,.4);text-transform:uppercase;}.smoke-opt{font-family:'Cinzel',serif;font-size:7.5px;letter-spacing:.25em;color:rgba(200,165,90,.35);background:none;border:none;cursor:pointer;padding:0;transition:color .2s;}.smoke-opt:hover,.smoke-opt.active{color:#c8a55a;}
+      .hero-smoke{position:absolute;inset:0;pointer-events:none;z-index:2;}
+      .v-amber{background:#070602;}
+      .v-amber .hero-smoke{background:radial-gradient(ellipse 100% 10% at 50% 0%,rgba(7,6,2,.55),transparent),radial-gradient(ellipse 130% 52% at 50% 115%,rgba(5,4,2,1),transparent),radial-gradient(ellipse 30% 100% at -1% 50%,rgba(5,4,2,.8),transparent),radial-gradient(ellipse 30% 100% at 101% 50%,rgba(5,4,2,.8),transparent),radial-gradient(ellipse 55% 42% at 12% 78%,rgba(105,68,5,.52),transparent),radial-gradient(ellipse 50% 36% at 82% 82%,rgba(88,56,4,.44),transparent),radial-gradient(ellipse 80% 28% at 50% 55%,rgba(145,98,10,.13),transparent),radial-gradient(ellipse 50% 18% at 50% 30%,rgba(165,115,15,.08),transparent);}
+      .hero-compass{position:absolute;left:50%;top:50%;transform:translate(-50%,-55%);width:clamp(200px,30vw,390px);height:clamp(200px,30vw,390px);opacity:.1;pointer-events:none;z-index:3;}
       .hero-frame{position:absolute;top:44px;left:36px;right:36px;bottom:108px;border:1px solid rgba(200,165,90,.17);pointer-events:none;z-index:4;}
-      .hero-card{position:absolute;top:57px;left:52px;z-index:5;}
-      .hero-card-name{font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.42em;font-weight:600;color:#e2ccaa;text-transform:uppercase;line-height:1.5;}
-      .hero-card-role{font-family:'Space Mono',monospace;font-size:6px;letter-spacing:.2em;color:#c8a55a;text-transform:uppercase;margin-top:3px;}
-      .hero-qte{position:absolute;top:50%;right:0;width:20%;transform:translateY(-50%);z-index:5;text-align:center;font-family:'Cinzel',serif;font-size:clamp(10px,1.3vw,16px);letter-spacing:.14em;color:#c8b090;line-height:2.1;padding-right:36px;text-transform:uppercase;}
+      .hero-qte{position:absolute;top:50%;right:0;width:20%;transform:translateY(-50%);z-index:5;text-align:center;font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(11px,1.4vw,18px);font-weight:400;letter-spacing:.01em;color:#c8b090;line-height:2;padding-right:36px;}
       .hero-anch{font-family:'Playfair Display',serif;font-size:clamp(46px,8.5vw,100px);font-weight:900;line-height:1;letter-spacing:-.025em;white-space:nowrap;position:absolute;bottom:128px;left:50%;transform:translateX(-50%);opacity:0;pointer-events:none;user-select:none;z-index:6;}
       .hero-cta{position:absolute;bottom:76px;left:50%;transform:translateX(-50%);z-index:6;display:flex;gap:26px;align-items:center;white-space:nowrap;}
       .hcbtn{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.4em;text-transform:uppercase;color:#a08e6e;background:none;border:none;cursor:pointer;transition:color .25s;padding:0;}
@@ -291,7 +281,7 @@
       .fn em{font-style:normal;color:#8a0000;}
       .fc{font-family:'Cinzel',serif;font-size:7px;color:#c8c0b8;letter-spacing:.35em;}
       @media(max-width:900px){
-        .nav{padding:18px 24px;}.hero-pg{padding:0 24px 64px;}.hero-vl{left:24px;}.hero-scroll{right:24px;}
+        .nav{padding:18px 24px;}.hero-scroll{right:24px;}
         .shead{padding:64px 24px 36px;}.oc.tl,.oc.bl{left:12px;}.oc.tr,.oc.br{right:12px;}
         .gallery{padding:4px;}.metrics{grid-template-columns:repeat(2,1fr);margin:0 24px 36px;}
         .tab-strip{padding:14px 4px 0;}
@@ -303,40 +293,24 @@
       @media(max-width:540px){.cgrid{grid-template-columns:repeat(2,1fr);gap:12px;}.metrics{grid-template-columns:repeat(2,1fr);}.nright{gap:20px;}.lightbox{padding:14px;}.lbpanel{width:100%;height:92vh;gap:10px;}.lbtop{min-height:36px;}.lbmeta{min-height:110px;}.lbstory{font-size:10px;}.lbarrow{width:34px;height:54px;font-size:36px;}}
     `;
 
-    function Compass(){
-      const m=[0,45,90,135,180,225,270,315],i=[22.5,67.5,112.5,157.5,202.5,247.5,292.5,337.5];
-      return(<svg viewBox="0 0 200 200" style={{position:"absolute",right:"4%",bottom:"8%",width:"clamp(160px,26vw,340px)",height:"clamp(160px,26vw,340px)",opacity:.07,pointerEvents:"none"}} aria-hidden="true">
-        {[95,75,55,30,8].map(r=><circle key={r} cx="100" cy="100" r={r} stroke="#c8a55a" strokeWidth=".5" fill="none"/>)}
-        {m.map(d=>{const r=(d-90)*Math.PI/180,c=Math.cos(r),s=Math.sin(r);return(<g key={d}><line x1={100+8*c} y1={100+8*s} x2={100+93*c} y2={100+93*s} stroke="#c8a55a" strokeWidth=".3"/><line x1={100+78*c} y1={100+78*s} x2={100+93*c} y2={100+93*s} stroke="#c8a55a" strokeWidth="1.5"/></g>);})}
-        {i.map(d=>{const r=(d-90)*Math.PI/180,c=Math.cos(r),s=Math.sin(r);return<line key={d} x1={100+85*c} y1={100+85*s} x2={100+93*c} y2={100+93*s} stroke="#c8a55a" strokeWidth=".5"/>;})}
-      </svg>);
-    }
-    function Corners(){return(<><div className="oc tl"/><div className="oc tr"/><div className="oc bl"/><div className="oc br"/></>);}
-    function GoldDiv(){return(<div className="gdiv"><div className="gl"/><span className="gr">᛭</span><div className="gl"/></div>);}
-    function SiteFooter(){return(<footer className="foot"><div className="fn">Vinit Patel <em>·</em> Photography</div><div className="fc">© 2026 · Calgary, AB</div></footer>);}
+    function Corners(){return React.createElement(React.Fragment,null,React.createElement("div",{className:"oc tl"}),React.createElement("div",{className:"oc tr"}),React.createElement("div",{className:"oc bl"}),React.createElement("div",{className:"oc br"}));}
+    function GoldDiv(){return React.createElement("div",{className:"gdiv"},React.createElement("div",{className:"gl"}),React.createElement("span",{className:"gr"},"\u16EB"),React.createElement("div",{className:"gl"}));}
+    function SiteFooter(){return React.createElement("footer",{className:"foot"},React.createElement("div",{className:"fn"},"Vinit Patel ",React.createElement("em",null,"\u00B7")," Photography"),React.createElement("div",{className:"fc"},"\u00A9 2026 \u00B7 Calgary, AB"));}
 
     function HeroStrip({onOpen}){
       return(
         <>
-          <div className="hero-strip-label">ᚠ Featured</div>
+          <div className="hero-strip-label">&#x16A0; Featured</div>
           <div className="hero-strip">
             {HERO_PHOTOS.map(p=>{
               const wi=WILDLIFE.findIndex(w=>w.id===p.id);
               return(
-                <div
-                  key={p.id}
-                  className="gi gi-hero"
-                  onClick={e=>onOpen(e,wi)}
-                  role="button"
-                  tabIndex="0"
-                  onKeyDown={e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();onOpen(e,wi);}}}
-                  aria-label={`Open ${p.title}`}
-                >
+                <div key={p.id} className="gi gi-hero" onClick={e=>onOpen(e,wi)} role="button" tabIndex="0" onKeyDown={e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();onOpen(e,wi);}}} aria-label={`Open ${p.title}`}>
                   <img src={p.img} alt={p.title} className="gph"/>
                   <div className="hero-badge">{p.cat}</div>
                   <div className="gov">
                     <div className="ottl">{p.title}</div>
-                    <div className="oloc">ᛟ {p.loc}</div>
+                    <div className="oloc">&#x16DF; {p.loc}</div>
                     <div className="ostr">{p.story}</div>
                   </div>
                 </div>
@@ -350,22 +324,14 @@
     function WildlifeGallery({onOpen}){
       const [activeTab,setActiveTab]=useState("all");
       const [fadeKey,setFadeKey]=useState(0);
-      const [aspects,setAspects]=useState(()=>{
-        const m={};
-        WILDLIFE.forEach(p=>{m[p.id]=p.tall?2/3:3/2;});
-        return m;
-      });
+      const [aspects,setAspects]=useState(()=>{const m={};WILDLIFE.forEach(p=>{m[p.id]=p.tall?2/3:3/2;});return m;});
       const [rows,setRows]=useState([]);
       const containerRef=useRef(null);
 
       useEffect(()=>{
         WILDLIFE.forEach(p=>{
           const img=new Image();
-          img.onload=()=>{
-            if(img.naturalWidth&&img.naturalHeight){
-              setAspects(prev=>({...prev,[p.id]:img.naturalWidth/img.naturalHeight}));
-            }
-          };
+          img.onload=()=>{if(img.naturalWidth&&img.naturalHeight){setAspects(prev=>({...prev,[p.id]:img.naturalWidth/img.naturalHeight}));}};
           img.onerror=()=>{};
           img.src=p.img;
         });
@@ -379,47 +345,31 @@
 
       const tabCounts=useMemo(()=>{
         const counts={all:WILDLIFE.length};
-        Object.entries(WILDLIFE_GROUPS).forEach(([key,cats])=>{
-          counts[key]=WILDLIFE.filter(p=>cats.includes(p.cat)).length;
-        });
+        Object.entries(WILDLIFE_GROUPS).forEach(([key,cats])=>{counts[key]=WILDLIFE.filter(p=>cats.includes(p.cat)).length;});
         return counts;
       },[]);
 
       const repack=useCallback(()=>{
-        const el=containerRef.current;
-        if(!el)return;
-        const cw=el.clientWidth-2*GAP;
-        if(!cw)return;
+        const el=containerRef.current;if(!el)return;
+        const cw=el.clientWidth-2*GAP;if(!cw)return;
         const bp=window.innerWidth>900?340:window.innerWidth>540?230:165;
         setRows(packRows(filtered,aspects,cw,bp));
       },[filtered,aspects]);
 
       useLayoutEffect(()=>{
         repack();
-        const el=containerRef.current;
-        if(!el)return;
-        const ro=new ResizeObserver(repack);
-        ro.observe(el);
+        const el=containerRef.current;if(!el)return;
+        const ro=new ResizeObserver(repack);ro.observe(el);
         return()=>ro.disconnect();
       },[repack]);
-
-      const handleTab=(tab)=>{
-        setActiveTab(tab);
-        setFadeKey(k=>k+1);
-      };
 
       return(
         <>
           <HeroStrip onOpen={onOpen}/>
           <div className="tab-strip">
             {TABS.map(t=>(
-              <button
-                key={t.id}
-                className={`tab-btn${activeTab===t.id?" tab-act":""}`}
-                onClick={()=>handleTab(t.id)}
-              >
-                {t.label}
-                <span className="tab-count">{tabCounts[t.id]}</span>
+              <button key={t.id} className={`tab-btn${activeTab===t.id?" tab-act":""}`} onClick={()=>{setActiveTab(t.id);setFadeKey(k=>k+1);}}>
+                {t.label}<span className="tab-count">{tabCounts[t.id]}</span>
               </button>
             ))}
           </div>
@@ -430,21 +380,12 @@
                   {row.items.map((p,ii)=>{
                     const wi=WILDLIFE.findIndex(w=>w.id===p.id);
                     return(
-                      <div
-                        key={p.id}
-                        className="gi"
-                        style={{width:row.widths[ii]+"px",height:"100%"}}
-                        onClick={e=>onOpen(e,wi)}
-                        role="button"
-                        tabIndex="0"
-                        onKeyDown={e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();onOpen(e,wi);}}}
-                        aria-label={`Open ${p.title}`}
-                      >
+                      <div key={p.id} className="gi" style={{width:row.widths[ii]+"px",height:"100%"}} onClick={e=>onOpen(e,wi)} role="button" tabIndex="0" onKeyDown={e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();onOpen(e,wi);}}} aria-label={`Open ${p.title}`}>
                         <img src={p.img} alt={p.title} className="gph"/>
                         <div className="gov">
                           <div className="ocat">{p.cat}</div>
                           <div className="ottl">{p.title}</div>
-                          <div className="oloc">ᛟ {p.loc}</div>
+                          <div className="oloc">&#x16DF; {p.loc}</div>
                           <div className="ostr">{p.story}</div>
                         </div>
                       </div>
@@ -465,37 +406,23 @@
       const closeTimerRef=useRef(null);
 
       const triggerClose=useCallback(()=>{
-        if(closing)return;
-        setClosing(true);
+        if(closing)return;setClosing(true);
         closeTimerRef.current=setTimeout(()=>onClose(),420);
       },[closing,onClose]);
 
       useEffect(()=>()=>clearTimeout(closeTimerRef.current),[]);
 
       useEffect(()=>{
-        setMorph({ready:false,style:{}});
-        setClosing(false);
+        setMorph({ready:false,style:{}});setClosing(false);
         const frame=requestAnimationFrame(()=>{
           const tr=titleRef.current?.getBoundingClientRect();
           const mr=metaRef.current?.getBoundingClientRect();
           const ir=imageRef.current?.getBoundingClientRect();
           if(!tr||!mr||!ir){setMorph({ready:true,style:{}});return;}
           const style={};
-          if(origin?.title){
-            style["--title-x"]=`${origin.title.left-tr.left}px`;
-            style["--title-y"]=`${origin.title.top-tr.top}px`;
-            style["--title-scale"]=clamp(origin.title.width/tr.width,.12,.55);
-          }
-          if(origin?.meta){
-            style["--meta-x"]=`${origin.meta.left-mr.left}px`;
-            style["--meta-y"]=`${origin.meta.top-mr.top}px`;
-            style["--meta-scale"]=clamp(origin.meta.width/mr.width,.35,.85);
-          }
-          if(origin?.image){
-            style["--image-x"]=`${origin.image.left-ir.left}px`;
-            style["--image-y"]=`${origin.image.top-ir.top}px`;
-            style["--image-scale"]=clamp(origin.image.width/ir.width,.12,1);
-          }
+          if(origin?.title){style["--title-x"]=`${origin.title.left-tr.left}px`;style["--title-y"]=`${origin.title.top-tr.top}px`;style["--title-scale"]=clamp(origin.title.width/tr.width,.12,.55);}
+          if(origin?.meta){style["--meta-x"]=`${origin.meta.left-mr.left}px`;style["--meta-y"]=`${origin.meta.top-mr.top}px`;style["--meta-scale"]=clamp(origin.meta.width/mr.width,.35,.85);}
+          if(origin?.image){style["--image-x"]=`${origin.image.left-ir.left}px`;style["--image-y"]=`${origin.image.top-ir.top}px`;style["--image-scale"]=clamp(origin.image.width/ir.width,.12,1);}
           setMorph({ready:true,style});
         });
         return()=>cancelAnimationFrame(frame);
@@ -511,26 +438,19 @@
         return()=>window.removeEventListener("keydown",onKey);
       },[triggerClose,closing,onPrev,onNext]);
 
-      const classes=[
-        "lightbox",
-        morph.ready?"ready":"",
-        origin&&!closing?"morphing":"",
-        closing?"closing":"",
-      ].filter(Boolean).join(" ");
+      const classes=["lightbox",morph.ready?"ready":"",origin&&!closing?"morphing":"",closing?"closing":""].filter(Boolean).join(" ");
 
       return(
         <div className={classes} role="dialog" aria-modal="true" aria-label={photo.title} onClick={triggerClose} style={morph.style}>
-          <button className="lbarrow prev" type="button" onClick={e=>{e.stopPropagation();if(!closing)onPrev();}} aria-label="Previous photo">‹</button>
-          <button className="lbarrow next" type="button" onClick={e=>{e.stopPropagation();if(!closing)onNext();}} aria-label="Next photo">›</button>
+          <button className="lbarrow prev" type="button" onClick={e=>{e.stopPropagation();if(!closing)onPrev();}} aria-label="Previous photo">&#x2039;</button>
+          <button className="lbarrow next" type="button" onClick={e=>{e.stopPropagation();if(!closing)onNext();}} aria-label="Next photo">&#x203A;</button>
           <div className="lbpanel">
-            <div className="lbtop">
-              <div className="lbtitle" ref={titleRef}>{photo.title}</div>
-            </div>
+            <div className="lbtop"><div className="lbtitle" ref={titleRef}>{photo.title}</div></div>
             <div className="lbphoto"><img ref={imageRef} src={photo.img} alt={photo.title} onClick={e=>e.stopPropagation()}/></div>
             <div className="lbmeta" ref={metaRef}>
               <div className="lbcat">{photo.cat}</div>
               <div className="lbcopy">
-                <div className="lbloc">ᛟ {photo.loc}</div>
+                <div className="lbloc">&#x16DF; {photo.loc}</div>
                 <div className="lbstory">{photo.story}</div>
               </div>
             </div>
@@ -540,7 +460,7 @@
     }
 
     function Portfolio(){
-      const [activePage,setActivePage]=useState("hero");const [smokeVar,setSmokeVar]=useState('crimson');
+      const [activePage,setActivePage]=useState("hero");
       const [nameStyle,setNameStyle]=useState({display:"none"});
       const [openPhoto,setOpenPhoto]=useState(null);
       const scrollerRef=useRef(null),heroAnchRef=useRef(null),navGhostRef=useRef(null),rafRef=useRef(null);
@@ -551,19 +471,19 @@
         setTimeout(dismiss,1500);
       },[]);
 
-      const onScroll=()=>{
+      const onScroll=useCallback(()=>{
         const sc=scrollerRef.current;if(!sc)return;
         const st=sc.scrollTop,ph=window.innerHeight;
         const idx=Math.min(Math.round(st/ph),PAGE_ORDER.length-1);
         setActivePage(PAGE_ORDER[idx]);
-        const he=Math.min(1,st/ph),ep2=ease(he);
+        const ep2=ease(Math.min(1,st/ph));
         document.body.style.background=`rgb(${Math.round(lerp(6,248,ep2))},${Math.round(lerp(4,246,ep2))},${Math.round(lerp(2,242,ep2))})`;
         const a=heroAnchRef.current,g=navGhostRef.current;if(!a||!g)return;
         const hr=a.getBoundingClientRect(),nr=g.getBoundingClientRect();
         const hFs=parseFloat(getComputedStyle(a).fontSize),nFs=parseFloat(getComputedStyle(g).fontSize);
-        const prog=Math.min(1,Math.max(0,st/(ph*.8))),ep=ease(prog);
+        const ep=ease(Math.min(1,Math.max(0,st/(ph*.8))));
         setNameStyle({position:"fixed",zIndex:200,top:`${lerp(hr.top,nr.top,ep)}px`,left:`${lerp(hr.left,nr.left,ep)}px`,fontSize:`${lerp(hFs,nFs,ep)}px`,lineHeight:`${lerp(.95,1.3,ep)}`,fontFamily:"'Playfair Display',serif",fontWeight:900,letterSpacing:"-.025em",whiteSpace:"nowrap",userSelect:"none",color:`rgb(${Math.round(lerp(237,248,ep))},${Math.round(lerp(227,248,ep))},${Math.round(lerp(208,242,ep))})`,pointerEvents:ep>.75?"all":"none",cursor:ep>.75?"pointer":"default"});
-      };
+      },[]);
 
       useEffect(()=>{
         const sc=scrollerRef.current;if(!sc)return;
@@ -572,8 +492,8 @@
         setTimeout(onScroll,150);
         if(document.fonts?.ready)document.fonts.ready.then(onScroll);
         return()=>sc.removeEventListener("scroll",h);
-      },[]);
-      useEffect(()=>{window.addEventListener("resize",onScroll);return()=>window.removeEventListener("resize",onScroll);},[]);
+      },[onScroll]);
+      useEffect(()=>{window.addEventListener("resize",onScroll);return()=>window.removeEventListener("resize",onScroll);},[onScroll]);
       useEffect(()=>{
         const sc=scrollerRef.current;if(!sc)return;
         sc.style.overflowY=openPhoto?"hidden":"scroll";
@@ -586,41 +506,34 @@
         const targetY=i*window.innerHeight;
         const startY=sc.scrollTop;
         if(Math.abs(targetY-startY)<2)return;
-        // reset inner-page scroll positions so we always land at the top
         sc.querySelectorAll('.pg.inner').forEach(el=>{el.scrollTop=0;});
-        // disable CSS snap so it doesn't fight the animation
         sc.style.scrollSnapType='none';
-        const dur=560;
-        const t0=performance.now();
-        const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+        const dur=560,t0=performance.now();
+        const ez=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
         const tick=now=>{
           const prog=Math.min((now-t0)/dur,1);
-          sc.scrollTop=startY+(targetY-startY)*ease(prog);
-          if(prog<1){requestAnimationFrame(tick);}
-          else{sc.scrollTop=targetY;sc.style.scrollSnapType='';}
+          sc.scrollTop=startY+(targetY-startY)*ez(prog);
+          if(prog<1){requestAnimationFrame(tick);}else{sc.scrollTop=targetY;sc.style.scrollSnapType='';}
         };
         requestAnimationFrame(tick);
       },[]);
-      const closePhoto=()=>setOpenPhoto(null);
-      const showPrevPhoto=()=>setOpenPhoto(p=>(p?{index:(p.index-1+WILDLIFE.length)%WILDLIFE.length,origin:null}:p));
-      const showNextPhoto=()=>setOpenPhoto(p=>(p?{index:(p.index+1)%WILDLIFE.length,origin:null}:p));
-      const openPhotoFromCard=(e,i)=>{
+
+      const closePhoto=useCallback(()=>setOpenPhoto(null),[]);
+      const showPrevPhoto=useCallback(()=>setOpenPhoto(p=>(p?{index:(p.index-1+WILDLIFE.length)%WILDLIFE.length,origin:null}:p)),[]);
+      const showNextPhoto=useCallback(()=>setOpenPhoto(p=>(p?{index:(p.index+1)%WILDLIFE.length,origin:null}:p)),[]);
+      const openPhotoFromCard=useCallback((e,i)=>{
         const card=e.currentTarget;
         const cardR=card.getBoundingClientRect();
         const imgR=card.querySelector(".gph")?.getBoundingClientRect();
-        setOpenPhoto({index:i,origin:{
-          title:{top:cardR.top,left:cardR.left,width:cardR.width,height:cardR.height},
-          meta:toRect(card.querySelector(".gov")?.getBoundingClientRect()),
-          image:toRect(imgR)
-        }});
-      };
+        setOpenPhoto({index:i,origin:{title:{top:cardR.top,left:cardR.left,width:cardR.width,height:cardR.height},meta:toRect(card.querySelector(".gov")?.getBoundingClientRect()),image:toRect(imgR)}});
+      },[]);
 
       const FACTS=[
-        {l:"Based in",v:"Calgary, AB · Canada"},
+        {l:"Based in",v:"Calgary, AB \u00B7 Canada"},
         {l:"Camera",v:"Nikon DSLR"},
-        {l:"Corporate Experience",v:"Social Media Assistant\nLaurentian University · 2023–2024"},
-        {l:"Locations Covered",v:"Calgary · Banff · Sudbury · Algoma\nKasol, Himachal Pradesh, India"},
-        {l:"Content Languages",v:"English · French"},
+        {l:"Corporate Experience",v:"Social Media Assistant\nLaurentian University \u00B7 2023\u20132024"},
+        {l:"Locations Covered",v:"Calgary \u00B7 Banff \u00B7 Sudbury \u00B7 Algoma\nKasol, Himachal Pradesh, India"},
+        {l:"Content Languages",v:"English \u00B7 French"},
         {l:"Contact",v:"vinitpatel932@gmail.com",email:true},
       ];
 
@@ -638,8 +551,7 @@
           </div>
         </nav>
         <div ref={scrollerRef} className="scroller">
-
-          <section className={`pg hero-pg v-${smokeVar}`}>
+          <section className="pg hero-pg v-amber">
             <div className="hero-smoke" aria-hidden="true"/>
             <svg className="hero-compass" viewBox="0 0 200 200" aria-hidden="true">
               {[95,75,55,30,8].map(r=><circle key={r} cx="100" cy="100" r={r} stroke="#c8a55a" strokeWidth=".5" fill="none"/>)}
@@ -647,19 +559,13 @@
               {[22.5,67.5,112.5,157.5,202.5,247.5,292.5,337.5].map(d=>{const rr=(d-90)*Math.PI/180,cc=Math.cos(rr),ss=Math.sin(rr);return<line key={d} x1={100+85*cc} y1={100+85*ss} x2={100+93*cc} y2={100+93*ss} stroke="#c8a55a" strokeWidth=".5"/>;})}
             </svg>
             <div className="hero-frame" aria-hidden="true"/>
-            <div className="smoke-picker" aria-label="Choose smoke style">
-              <span className="smoke-lbl">Mood</span>
-              {[['grey','I'],['crimson','II'],['amber','III']].map(([v,l])=>(
-                <button key={v} className={`smoke-opt${smokeVar===v?' active':''}`} onClick={()=>setSmokeVar(v)}>{l}</button>
-              ))}
-            </div>
             <div className="hero-qte" aria-hidden="true">From the Rockies<br/>to the Himalayas.<br/>Every frame, on foot,<br/>in the wild.</div>
             <h1 ref={heroAnchRef} className="hero-anch" aria-hidden="true">Vinit Patel</h1>
             <div className="hero-cta">
               <button className="hcbtn" onClick={()=>goTo("wildlife")}>Wildlife</button>
-              <span className="hcsep">·</span>
+              <span className="hcsep">&#xB7;</span>
               <button className="hcbtn" onClick={()=>goTo("corporate")}>Corporate</button>
-              <span className="hcsep">·</span>
+              <span className="hcsep">&#xB7;</span>
               <button className="hcbtn" onClick={()=>goTo("about")}>About</button>
             </div>
             <div className="hero-scroll" aria-hidden="true"><span>Scroll</span><div className="sbar"/></div>
@@ -667,9 +573,9 @@
 
           <section className="pg inner">
             <div className="shead"><Corners/>
-              <div className="seye">ᚢ 01 — Personal Work</div>
+              <div className="seye">&#x16A2; 01 &mdash; Personal Work</div>
               <h2 className="stitle">Wildlife &amp; Nature</h2>
-              <p className="sdesc">Field photography across Canada and India — from Calgary's urban sanctuaries to the Himalayan foothills. Every frame captured on personal time, on foot, in the wild.</p>
+              <p className="sdesc">Field photography across Canada and India &mdash; from Calgary&apos;s urban sanctuaries to the Himalayan foothills. Every frame captured on personal time, on foot, in the wild.</p>
             </div>
             <GoldDiv/>
             <WildlifeGallery onOpen={openPhotoFromCard}/>
@@ -678,9 +584,9 @@
 
           <section className="pg inner">
             <div className="shead">
-              <div className="seye" style={{color:"#c8a55a99"}}>02 — Professional Work</div>
+              <div className="seye" style={{color:"#c8a55a99"}}>02 &mdash; Professional Work</div>
               <h2 className="stitle">Laurentian University</h2>
-              <p className="sdesc">Social Media Assistant · September 2023 – April 2024 · Sudbury, ON<br/>30+ curated Instagram posts plus ongoing content across Facebook and TikTok — bilingual photography, caption writing, event coverage, and scheduling for a verified institutional account.</p>
+              <p className="sdesc">Social Media Assistant &middot; September 2023 &ndash; April 2024 &middot; Sudbury, ON<br/>30+ curated Instagram posts plus ongoing content across Facebook and TikTok &mdash; bilingual photography, caption writing, event coverage, and scheduling for a verified institutional account.</p>
             </div>
             <div className="metrics">
               {[{n:"30",a:"+",l:"Instagram Posts"},{n:"3",a:"",l:"Platforms"},{n:"8",a:"mo",l:"Duration"},{n:"2",a:"",l:"Languages"}].map((m,i)=>(<div className="met" key={i}><div className="mnum">{m.n}<span>{m.a}</span></div><div className="mlbl">{m.l}</div></div>))}
@@ -691,25 +597,25 @@
                   <div className="ppill"><div className="ppin"/></div>
                   <div className="igh"><div className="igav"/><div className="igun">laurentianu</div><div className="igvr"/></div>
                   <div className="igim"><img src={p.img} alt={p.event}/></div>
-                  <div className="igft"><div className="iglk"><span className="ighrt">♥</span> {p.likes.toLocaleString()}</div><div className="igcp"><strong>laurentianu</strong> · {p.date}</div></div>
+                  <div className="igft"><div className="iglk"><span className="ighrt">&#x2665;</span> {p.likes.toLocaleString()}</div><div className="igcp"><strong>laurentianu</strong> &middot; {p.date}</div></div>
                 </div>
                 <div className="pme"><div className="pev">{p.event}</div><div className="pdt">{p.date}</div></div>
               </a>))}
             </div>
-            <div className="ig-cta"><a href={IG} target="_blank" rel="noopener noreferrer">ᛟ View full work @laurentianu on Instagram</a></div>
+            <div className="ig-cta"><a href={IG} target="_blank" rel="noopener noreferrer">&#x16DF; View full work @laurentianu on Instagram</a></div>
             <GoldDiv/><SiteFooter/>
           </section>
 
           <section className="pg inner">
             <div className="shead"><Corners/>
-              <div className="seye">ᛟ 03 — The Photographer</div>
+              <div className="seye">&#x16DF; 03 &mdash; The Photographer</div>
               <h2 className="stitle">About</h2>
             </div>
             <div className="awrap">
               <div>
                 <h3 className="ahl">Behind<br/>the <em>lens.</em></h3>
-                <p className="ap">Vinit Patel is a wildlife photographer and social media content creator based in Calgary, Alberta. His work spans the urban sanctuaries of Calgary's river pathways, the alpine wilderness of Banff National Park, the boreal forests of Northern Ontario, and the mountain rivers of Himachal Pradesh, India.</p>
-                <p className="ap">Trained through practice rather than institution, Vinit's photography is defined by patience, ecological curiosity, and a cinematic eye developed across thousands of hours in the field. His corporate work at Laurentian University demonstrated that same eye applied to institutional storytelling — bilingual, culturally sensitive, and engagement-driven.</p>
+                <p className="ap">Vinit Patel is a wildlife photographer and social media content creator based in Calgary, Alberta. His work spans the urban sanctuaries of Calgary&apos;s river pathways, the alpine wilderness of Banff National Park, the boreal forests of Northern Ontario, and the mountain rivers of Himachal Pradesh, India.</p>
+                <p className="ap">Trained through practice rather than institution, Vinit&apos;s photography is defined by patience, ecological curiosity, and a cinematic eye developed across thousands of hours in the field. His corporate work at Laurentian University demonstrated that same eye applied to institutional storytelling &mdash; bilingual, culturally sensitive, and engagement-driven.</p>
               </div>
               <div className="facts">
                 {FACTS.map((f,i)=>(<div className="fact" key={i}>
@@ -720,13 +626,12 @@
             </div>
             <GoldDiv/><SiteFooter/>
           </section>
-
         </div>
         {openPhoto&&<PhotoLightbox photo={WILDLIFE[openPhoto.index]} origin={openPhoto.origin} onClose={closePhoto} onPrev={showPrevPhoto} onNext={showNextPhoto}/>}
       </>);
     }
 
-    ReactDOM.createRoot(document.getElementById('root')).render(<Portfolio/>);
+    ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(Portfolio));
   </script>
 </body>
 </html>
