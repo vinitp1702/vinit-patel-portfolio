@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="theme-color" content="#1c1309"/>
+  <title>Vinit Patel — Wildlife Photography & Social Media</title>
+  <meta name="description" content="Portfolio of Vinit Patel — wildlife photographer and social media content creator based in Calgary, AB."/>
+  <meta name="author" content="Vinit Patel"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:title" content="Vinit Patel — Wildlife Photography & Social Media"/>
+  <meta property="og:description" content="Field photographer & social media content creator. From the Rockies to the Himalayas."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Cinzel:wght@400;600;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html,body{height:100%;overflow:hidden;}
+    body{background:#1c1309;font-family:'Space Mono',monospace;}
+    #loading{position:fixed;inset:0;z-index:99999;background:#1c1309;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;transition:opacity .7s ease;}
+    #loading.out{opacity:0;pointer-events:none;}
+    .ld-name{font-family:'Playfair Display',serif;font-size:clamp(28px,5vw,52px);font-weight:900;letter-spacing:-.02em;color:#ede3d0;}
+    .ld-name em{font-style:normal;color:#8a0000;}
+    .ld-label{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.55em;text-transform:uppercase;color:#9a7a30;}
+    .ld-bar{width:60px;height:1px;background:linear-gradient(to right,transparent,#c8a55a,transparent);animation:lp 1.6s ease-in-out infinite;}
+    @keyframes lp{0%,100%{opacity:.2}50%{opacity:1}}
+  </style>
+</head>
+<body>
+  <div id="loading">
+    <div class="ld-name">Vinit <em>Patel</em></div>
+    <div class="ld-label">Portfolio</div>
+    <div class="ld-bar"></div>
+  </div>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel" data-presets="react">
+    const {useState,useEffect,useRef,useLayoutEffect,useCallback,useMemo}=React;
+
+    const WILDLIFE=[
+      {id:1, title:"Golden Hour Silhouette",         loc:"Inglewood Bird Sanctuary, Calgary AB",  cat:"Atmospheric",     story:"A lone bird between worlds — mist, gold, and silence",                        img:"photos/wildlife/w01_golden_hour_silhouette.jpg",  tall:true },
+      {id:2, title:"Deer in Velvet",                 loc:"Inglewood Bird Sanctuary, Calgary AB",  cat:"Mammal Portrait", story:"Eye contact across the boundary between wild and human",                      img:"photos/wildlife/w02_deer_in_velvet.jpg",           tall:true },
+      {id:3, title:"Ducks on Misty River",           loc:"Inglewood Bird Sanctuary, Calgary AB",  cat:"Atmospheric",     story:"Two goldeneyes gliding through morning fog and golden light",                img:"photos/wildlife/w03_ducks_misty_river.jpg",        tall:true },
+      {id:4, title:"Black Bear",                     loc:"Laurentian University, Sudbury ON",     cat:"Mammal",          story:"Urban wildlife — the moment before a decision is made",                      img:"photos/wildlife/w04_black_bear.jpg",               tall:true },
+      {id:5, title:"Jack Pines at Last Light",          loc:"Lauzon Lake, Algoma Mills ON",          cat:"Landscape",       story:"Three jack pines cut into an amber sky — the last fire of a northern Ontario evening burning behind them", img:"photos/wildlife/w05_pine_silhouettes_sunset.jpg", tall:false},
+      {id:6, title:"Clark's Nutcracker",             loc:"Banff National Park, AB",               cat:"Bird Portrait",   story:"Up close with one of the Rockies' most intelligent birds",                   img:"photos/wildlife/w06_clarks_nutcracker.jpg",        tall:true },
+      {id:7, title:"Red-winged Blackbird",           loc:"Prince's Island Park, Calgary AB",      cat:"Bird",            story:"The red-orange epaulette flash against bare winter branches",               img:"photos/wildlife/w07_redwinged_blackbird.jpg",      tall:true },
+      {id:8, title:"Peyto Lake",                     loc:"Banff National Park, AB",               cat:"Landscape",       story:"The impossible turquoise of glacial melt in the Rockies",                    img:"photos/wildlife/w08_peyto_lake.jpg",               tall:true },
+      {id:9, title:"Golden-Mantled Ground Squirrel", loc:"Banff National Park, AB",               cat:"Mammal",          story:"Standing watch at alpine elevation on lichen-covered granite",              img:"photos/wildlife/w09_ground_squirrel.jpg",          tall:true },
+      {id:10,title:"American Dipper",                loc:"Kasol River, Himachal Pradesh, India",  cat:"Bird",            story:"Photographed alongside the Parvati River in the Himalayan foothills",       img:"photos/wildlife/w10_american_dipper.jpg",          tall:true },
+      {id:11,title:"Yellow Warbler",                 loc:"Carburn Park, Calgary AB",              cat:"Bird",            story:"A flash of chrome yellow against spring green — beak open mid-song",         img:"photos/wildlife/w11_yellow_warbler.jpg",           tall:false},
+      {id:12,title:"Tree Swallow Pair",              loc:"Carburn Park, Calgary AB",              cat:"Bird",            story:"Iridescent teal — two birds, one branch, clean blue sky",                   img:"photos/wildlife/w12_tree_swallow_pair.jpg",        tall:true },
+      {id:13,title:"American White Pelican",         loc:"Carburn Park, Calgary AB",              cat:"Bird",            story:"Preening alone while the flock rests on the sandbar behind",                img:"photos/wildlife/w13_white_pelican.jpg",            tall:false},
+      {id:14,title:"Black-capped Chickadee",         loc:"Bennett Lake Trail, Sudbury ON",        cat:"Bird",            story:"Feeding in the frost — warm brown bokeh of a winter afternoon",             img:"photos/wildlife/w14_chickadee.jpg",               tall:false},
+      {id:15,title:"American Robin",                 loc:"Nose Hill Park, Calgary AB",            cat:"Bird",            story:"Autumn's rust-orange breast against the gold of falling birch leaves",      img:"photos/wildlife/w15_american_robin.jpg",           tall:true },
+      {id:16,title:"Black-billed Magpie",            loc:"Laycock Park, Nose Creek, Calgary AB",  cat:"Bird",            story:"Bold black and white against amber wetland grass — unmistakably Albertan", img:"photos/wildlife/w16_blackbilled_magpie.jpg",       tall:false},
+      {id:17,title:"Honeybees on Hive",              loc:"Farm near Jumbo Lake, Sudbury ON",      cat:"Macro",           story:"Graphic colour and industry — the hive as architecture",                    img:"photos/wildlife/w17_honeybees.jpg",               tall:false},
+      {id:18,title:"Prairie Path",                   loc:"Nose Hill Park, Calgary AB",            cat:"Landscape",       story:"A dirt track leading nowhere in particular, everywhere in general",          img:"photos/wildlife/w18_prairie_path.jpg",            tall:false},
+      {id:20,title:"Horse Portrait",                 loc:"Farm near Jumbo Lake, Sudbury ON",      cat:"Animal Portrait", story:"Quiet grazing — the calm intimacy of being trusted by something large",     img:"photos/wildlife/w20_horse_portrait.jpg",           tall:true },
+      {id:19,title:"Red Squirrel",                   loc:"Bennett Lake Trail, Sudbury ON",        cat:"Mammal",          story:"Paws tucked, alert — feeding before the cold sets in",                      img:"photos/wildlife/w19_red_squirrel.jpg",             tall:true },
+      {id:21,title:"Misty Riverbank at Sunrise",     loc:"Inglewood Bird Sanctuary, Calgary AB",  cat:"Atmospheric",     story:"Before the city woke, the river held its breath",                           img:"photos/wildlife/w21_misty_riverbank.jpg",          tall:true },
+    ];
+
+    const WILDLIFE_GROUPS={
+      birds:      ["Bird","Bird Portrait"],
+      mammals:    ["Mammal","Mammal Portrait","Animal Portrait"],
+      landscapes: ["Landscape","Atmospheric","Macro"],
+    };
+
+    const HERO_IDS=[1,4,8];
+    const HERO_PHOTOS=WILDLIFE.filter(p=>HERO_IDS.includes(p.id));
+
+    const TABS=[
+      {id:"all",   label:"All"},
+      {id:"birds", label:"Birds"},
+      {id:"mammals",label:"Mammals"},
+      {id:"landscapes",label:"Landscapes & Atmospheric"},
+    ];
+
+    const IG="https://www.instagram.com/laurentianu/";
+    const CORPORATE=[
+      {id:1,event:"Pre-Midterm Stress Relief",               likes:645,date:"Oct 2023",    img:"photos/corporate/c01_therapy_puppy.jpg",       link:"https://www.instagram.com/p/CxzISI4rrE8/"},
+      {id:2,event:"National Day for Truth & Reconciliation", likes:337,date:"Sep 29, 2023",img:"photos/corporate/c02_truth_reconciliation.jpg", link:IG},
+      {id:3,event:"Biodiversity Reclamation Trail Walk",     likes:289,date:"Oct 2023",    img:"photos/corporate/c03_biodiversity_trail.jpg",   link:IG},
+      {id:4,event:"Halloween Campus Celebration",            likes:676,date:"Oct 31, 2023",img:"photos/corporate/c04_halloween.jpg",            link:IG},
+      {id:5,event:"Laurentian University Open House",        likes:684,date:"Nov 4, 2023", img:"photos/corporate/c05_open_house.jpg",           link:IG},
+      {id:6,event:"National Indigenous Veterans Day",        likes:211,date:"Nov 8, 2023", img:"photos/corporate/c06_indigenous_veterans.jpg",  link:IG},
+      {id:7,event:"International Cultural Celebration",      likes:613,date:"Nov 23, 2023",img:"photos/corporate/c07_cultural_day.jpg",         link:IG},
+      {id:8,event:"Curling Team Practice Preview",           likes:544,date:"Jan 12, 2024",img:"photos/corporate/c08_curling_team.jpg",         link:IG},
+    ];
+
+    const PAGE_ORDER=["hero","wildlife","corporate","about"];
+    const lerp=(a,b,t)=>a+(b-a)*t;
+    const ease=(t)=>t<.5?2*t*t:-1+(4-2*t)*t;
+    const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
+    const toRect=r=>r?{top:r.top,left:r.left,width:r.width,height:r.height}:null;
+
+    const GAP=6;
+
+    function packRows(photos,aspects,containerW,targetH){
+      if(!containerW||!photos.length)return[];
+      const rows=[];
+      let bucket=[];
+      let bucketNatW=0;
+      for(const p of photos){
+        const ar=aspects[p.id]||(p.tall?2/3:3/2);
+        const natW=ar*targetH;
+        const gapAdd=bucket.length>0?GAP:0;
+        if(bucket.length>0&&bucketNatW+gapAdd+natW>containerW+0.5){
+          rows.push(buildRow(bucket,aspects,containerW,targetH,false));
+          bucket=[p];
+          bucketNatW=natW;
+        }else{
+          bucket.push(p);
+          bucketNatW+=gapAdd+natW;
+        }
+      }
+      if(bucket.length){
+        const isLast=true;
+        rows.push(buildRow(bucket,aspects,containerW,targetH,isLast));
+      }
+      return rows;
+    }
+
+    function buildRow(items,aspects,containerW,targetH,isLast){
+      const totalGap=(items.length-1)*GAP;
+      const availW=containerW-totalGap;
+      const natWs=items.map(p=>(aspects[p.id]||(p.tall?2/3:3/2))*targetH);
+      const totalNatW=natWs.reduce((a,b)=>a+b,0);
+      let scale=isLast?1:availW/totalNatW;
+      if(isLast&&scale>1.3)scale=1;
+      const h=Math.round(targetH*scale);
+      const rawWidths=natWs.map(w=>w*scale);
+      const floored=rawWidths.map(w=>Math.floor(w));
+      const deficit=availW-floored.reduce((a,b)=>a+b,0);
+      const widths=floored.map((w,i)=>i===0?w+Math.round(deficit):w);
+      return{items,height:h,widths};
+    }
+
+    const CSS=`
+      ::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:#8a0000;border-radius:2px;}
+      .grain{position:fixed;inset:0;pointer-events:none;z-index:1000;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:200px;opacity:.026;}
+      .scroller{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory;overscroll-behavior-y:none;}
+      .pg{height:100vh;scroll-snap-align:start;position:relative;flex-shrink:0;}
+      .pg.inner{overflow-y:auto;background:#f8f6f2;}
+      .nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 52px;display:flex;justify-content:space-between;align-items:center;background:rgba(10,9,5,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(200,165,90,.09);}
+      .nghost{opacity:0;pointer-events:none;font-family:'Playfair Display',serif;font-size:15px;font-weight:900;letter-spacing:-.025em;white-space:nowrap;line-height:1.3;}
+      .nright{display:flex;gap:40px;align-items:center;}
+      .nbtn{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.35em;text-transform:uppercase;color:#8a7a50;cursor:pointer;transition:color .3s,font-size .2s;background:none;border:none;padding:0 0 2px;}
+      .nbtn:hover{color:#c8a55a!important;}
+      .nact{color:#c8a55a!important;font-size:9.5px;text-decoration:underline;text-underline-offset:5px;text-decoration-color:rgba(200,165,90,.65);text-decoration-thickness:1px;}
+      .nav-email{font-family:'Space Mono',monospace;font-size:7.5px;letter-spacing:.08em;color:#7a6a50;text-decoration:none;transition:color .25s;margin-left:10px;white-space:nowrap;}
+      .nav-email:hover{color:#c8a55a;}
+      .hero-pg{display:flex;flex-direction:column;justify-content:flex-end;padding:0 52px 80px;overflow:hidden;background:#1c1309;}
+      .hero-amb{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 55% 50% at 18% 72%,rgba(160,20,0,.18),transparent),radial-gradient(ellipse 70% 65% at 82% 28%,rgba(200,165,90,.13),transparent),radial-gradient(ellipse 40% 35% at 50% 100%,rgba(100,60,10,.22),transparent);}
+      .hero-vl{position:absolute;left:52px;top:0;width:1px;height:55%;background:linear-gradient(to bottom,transparent,rgba(138,0,0,.9) 60%,transparent);}
+      .hero-eye{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.55em;text-transform:uppercase;color:#c8a55a;margin-bottom:24px;position:relative;z-index:1;}
+      .hero-anch{font-family:'Playfair Display',serif;font-size:clamp(52px,10vw,118px);font-weight:900;line-height:1;letter-spacing:-.03em;white-space:nowrap;margin-bottom:32px;position:relative;z-index:1;opacity:0;pointer-events:none;user-select:none;}
+      .hero-tag{font-size:9px;letter-spacing:.22em;color:#b0a088;max-width:400px;line-height:2.4;text-transform:uppercase;position:relative;z-index:1;}
+      .hero-div{display:flex;align-items:center;gap:14px;margin:22px 0 8px;position:relative;z-index:1;}
+      .hdl{width:52px;height:1px;background:linear-gradient(to right,transparent,rgba(200,165,90,.65));}
+      .hdl.r{background:linear-gradient(to left,transparent,rgba(200,165,90,.65));}
+      .hdr{color:rgba(200,165,90,.75);font-size:13px;}
+      .hero-cta{display:flex;gap:24px;align-items:center;margin-top:8px;position:relative;z-index:1;}
+      .hcbtn{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.4em;text-transform:uppercase;color:#a08e6e;background:none;border:none;cursor:pointer;transition:color .25s;padding:0;}
+      .hcbtn:hover{color:#f0ead8;}
+      .hcsep{font-size:10px;color:#7a6040;}
+      .hero-scroll{position:absolute;right:52px;bottom:80px;z-index:1;display:flex;flex-direction:column;align-items:center;gap:10px;}
+      .hero-scroll span{font-family:'Cinzel',serif;font-size:7px;letter-spacing:.45em;color:#8a7858;writing-mode:vertical-rl;text-transform:uppercase;}
+      .sbar{width:1px;height:60px;background:linear-gradient(to bottom,transparent,#8a0000);}
+      .shead{padding:80px 52px 44px;border-bottom:1px solid #e4e0d8;position:relative;}
+      .shead::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,#c8a55a44,transparent);}
+      .oc{position:absolute;width:16px;height:16px;}
+      .oc.tl{top:10px;left:40px;border-top:1px solid #c8a55a55;border-left:1px solid #c8a55a55;}
+      .oc.tr{top:10px;right:40px;border-top:1px solid #c8a55a55;border-right:1px solid #c8a55a55;}
+      .oc.bl{bottom:-1px;left:40px;border-bottom:1px solid #c8a55a22;border-left:1px solid #c8a55a22;}
+      .oc.br{bottom:-1px;right:40px;border-bottom:1px solid #c8a55a22;border-right:1px solid #c8a55a22;}
+      .seye{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.5em;text-transform:uppercase;color:#5c3c12;margin-bottom:14px;}
+      .stitle{font-family:'Playfair Display',serif;font-size:clamp(22px,3.4vw,40px);font-weight:900;color:#111;letter-spacing:-.025em;line-height:1;}
+      .sdesc{font-size:9px;color:#8a8078;margin-top:16px;letter-spacing:.1em;line-height:2.1;max-width:520px;}
+      .gdiv{display:flex;align-items:center;gap:14px;padding:0 52px;}
+      .gl{flex:1;height:1px;background:linear-gradient(to right,transparent,#c8a55a33,transparent);}
+      .gr{color:#c8a55a55;font-size:14px;}
+      .hero-strip{display:flex;gap:6px;padding:6px 6px 0;height:clamp(180px,36vw,440px);}
+      .gi-hero{flex:1;min-width:0;border-radius:0;}
+      .gi-hero .gov{background:linear-gradient(to top,rgba(10,8,5,.97) 0%,rgba(10,8,5,.55) 45%,rgba(10,8,5,.08) 100%);opacity:.18;transition:opacity .45s ease;}
+      .gi-hero:hover .gov{opacity:1;}
+      .gi-hero:hover .gph{transform:scale(1.035);}
+      .hero-badge{position:absolute;top:13px;left:13px;font-family:'Cinzel',serif;font-size:6px;letter-spacing:.52em;text-transform:uppercase;color:#c8a55a;background:rgba(8,6,3,.7);padding:5px 9px;border:1px solid rgba(200,165,90,.28);pointer-events:none;z-index:2;}
+      .gi-hero .ottl{font-size:18px;line-height:1.15;}
+      .hero-strip-label{padding:18px 6px 2px;font-family:'Cinzel',serif;font-size:7px;letter-spacing:.5em;text-transform:uppercase;color:#5c3c12;}
+      .tab-strip{display:flex;align-items:flex-end;gap:0;padding:18px 6px 0;border-bottom:1px solid #e4e0d8;margin-bottom:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+      .tab-strip::-webkit-scrollbar{display:none;}
+      .tab-btn{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.38em;text-transform:uppercase;font-variant:small-caps;color:#7a6e60;background:none;border:none;border-bottom:2px solid transparent;padding:0 18px 10px;cursor:pointer;transition:color .22s,border-color .22s;white-space:nowrap;position:relative;display:flex;align-items:center;gap:6px;flex-shrink:0;}
+      .tab-btn:hover{color:#3d2a10;}
+      .tab-act{color:#5c3c12!important;border-bottom-color:#c8a55a!important;}
+      .tab-count{font-family:'Space Mono',monospace;font-size:7px;font-variant:normal;letter-spacing:0;color:inherit;opacity:.65;}
+      .gallery{padding:6px;}
+      .gallery-fade{animation:gFade .3s ease both;}
+      @keyframes gFade{from{opacity:0}to{opacity:1}}
+      .gj-row{display:flex;gap:6px;margin-bottom:6px;}
+      .gi{position:relative;overflow:hidden;cursor:pointer;background:#0a0805;box-shadow:0 1px 4px rgba(0,0,0,.07);transition:box-shadow .4s;flex-shrink:0;}
+      .gi:hover{box-shadow:0 6px 24px rgba(0,0,0,.16);}
+      .gi:hover .gov{opacity:1;}
+      .gi:hover .gph{transform:scale(1.04);}
+      .gph{width:100%;height:100%;display:block;object-fit:cover;transition:transform .7s cubic-bezier(.25,.46,.45,.94);}
+      .gov{position:absolute;inset:0;opacity:0;transition:opacity .4s ease;background:linear-gradient(to top,rgba(10,8,5,.95) 0%,rgba(10,8,5,.4) 50%,transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:18px;}
+      .ocat{font-family:'Cinzel',serif;font-size:7px;letter-spacing:.4em;text-transform:uppercase;color:#c8a55a;margin-bottom:5px;}
+      .ottl{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:#f8f6f2;margin-bottom:5px;line-height:1.2;}
+      .oloc{font-size:7px;letter-spacing:.15em;color:#c8a55a88;margin-bottom:5px;}
+      .ostr{font-size:8px;color:#888;line-height:1.7;}
+      .lightbox{position:fixed;inset:0;z-index:900;display:grid;place-items:center;padding:clamp(18px,4vw,46px);background:rgba(5,4,2,.78);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);animation:lbFade .26s ease both;}
+      .lbpanel{width:min(1180px,94vw);height:min(90vh,920px);display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:14px;color:#f8f6f2;pointer-events:none;}
+      .lbtop{min-height:44px;display:flex;align-items:flex-end;justify-content:flex-start;}
+      .lbtitle{font-family:'Playfair Display',serif;font-size:clamp(22px,4vw,54px);font-weight:900;line-height:.95;letter-spacing:-.025em;text-shadow:0 18px 50px rgba(0,0,0,.35);transform-origin:top left;will-change:transform,opacity;}
+      .lbphoto{min-height:0;display:flex;align-items:center;justify-content:center;position:relative;}
+      .lbphoto img{max-width:100%;max-height:100%;display:block;object-fit:contain;pointer-events:auto;transform-origin:top left;will-change:transform,opacity;}
+      .lbmeta{min-height:104px;display:grid;grid-template-columns:auto 1fr;gap:14px 26px;padding-top:4px;transform-origin:top left;will-change:transform,opacity;}
+      .lbcat{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.45em;text-transform:uppercase;color:#c8a55a;white-space:nowrap;}
+      .lbcopy{display:grid;gap:8px;align-content:start;}
+      .lbloc{font-size:9px;letter-spacing:.2em;color:#c8a55aaa;text-transform:uppercase;}
+      .lbstory{font-size:13px;color:#ddd7ca;line-height:1.9;letter-spacing:.04em;max-width:820px;}
+      .lbarrow{position:fixed;top:50%;transform:translateY(-50%);z-index:901;width:48px;height:64px;border:0;background:transparent;color:#f8f6f2;font-size:46px;line-height:1;cursor:pointer;text-shadow:0 8px 28px rgba(0,0,0,.7);opacity:.78;transition:opacity .2s,transform .2s;}
+      .lbarrow:hover{opacity:1;transform:translateY(-50%) scale(1.08);}
+      .lbarrow.prev{left:clamp(10px,3vw,34px);}
+      .lbarrow.next{right:clamp(10px,3vw,34px);}
+      .lightbox:not(.ready) .lbpanel{opacity:0;}
+      .lightbox.ready .lbpanel{opacity:1;}
+      .lightbox.morphing.ready .lbtitle{animation:lbTitleMorph .72s cubic-bezier(.08,.8,.15,1) both;}
+      .lightbox.morphing.ready .lbmeta{animation:lbMetaMorph .76s cubic-bezier(.08,.8,.15,1) .06s both;}
+      .lightbox.morphing.ready .lbphoto img{animation:lbImageMorph .72s cubic-bezier(.08,.8,.15,1) both;}
+      .lightbox:not(.morphing).ready .lbphoto img{animation:lbEnter .38s cubic-bezier(.2,.7,.2,1) both;}
+      .lightbox.closing{animation:lbFadeOut .42s cubic-bezier(.4,0,.8,.2) both;}
+      .lightbox.closing .lbtitle{animation:lbTitleOut .38s cubic-bezier(.4,0,.8,.2) both;}
+      .lightbox.closing .lbphoto img{animation:lbImageOut .42s cubic-bezier(.4,0,.8,.2) both;}
+      .lightbox.closing .lbmeta{animation:lbMetaOut .34s cubic-bezier(.4,0,.8,.2) both;}
+      @keyframes lbFade{from{opacity:0}to{opacity:1}}
+      @keyframes lbFadeOut{to{opacity:0}}
+      @keyframes lbEnter{from{opacity:0;transform:scale(.94) translateY(18px)}to{opacity:1;transform:scale(1) translateY(0)}}
+      @keyframes lbTitleMorph{from{opacity:0;transform:translate(var(--title-x,0),var(--title-y,0)) scale(var(--title-scale,.25));}to{opacity:1;transform:translate(0,0) scale(1);}}
+      @keyframes lbMetaMorph{from{opacity:0;transform:translate(var(--meta-x,0),var(--meta-y,0)) scale(var(--meta-scale,.62));}to{opacity:1;transform:translate(0,0) scale(1);}}
+      @keyframes lbImageMorph{from{opacity:.9;transform:translate(var(--image-x,0),var(--image-y,0)) scale(var(--image-scale,.42));}to{opacity:1;transform:translate(0,0) scale(1);}}
+      @keyframes lbTitleOut{to{opacity:0;transform:translateY(-28px) scale(.88);}}
+      @keyframes lbImageOut{to{opacity:0;transform:scale(.84) translateY(24px);}}
+      @keyframes lbMetaOut{to{opacity:0;transform:translateY(22px);}}
+      .metrics{margin:0 52px 48px;display:grid;grid-template-columns:repeat(4,1fr);border:1px solid #e4e0d8;border-radius:2px;overflow:hidden;background:#f4f1ec;}
+      .met{padding:28px 24px;text-align:center;border-right:1px solid #e4e0d8;position:relative;}
+      .met::before{content:'';position:absolute;top:0;left:20%;right:20%;height:1px;background:linear-gradient(to right,transparent,#c8a55a22,transparent);}
+      .met:last-child{border-right:none;}
+      .mnum{font-family:'Playfair Display',serif;font-size:36px;font-weight:900;color:#111;}
+      .mnum span{color:#8a0000;}
+      .mlbl{font-family:'Cinzel',serif;font-size:7px;letter-spacing:.35em;text-transform:uppercase;color:#b0a898;margin-top:8px;}
+      .cgrid{padding:40px 52px;display:grid;grid-template-columns:repeat(4,1fr);gap:28px;}
+      .pw{display:flex;flex-direction:column;align-items:center;cursor:pointer;text-decoration:none;}
+      .pw:hover .ph{transform:translateY(-8px);box-shadow:0 24px 60px rgba(0,0,0,.14),0 0 30px rgba(200,165,90,.06);}
+      .ph{width:100%;max-width:180px;background:#f0ede8;border-radius:26px;border:1px solid #e0dcd4;overflow:hidden;box-shadow:0 6px 28px rgba(0,0,0,.07);transition:transform .4s cubic-bezier(.25,.46,.45,.94),box-shadow .4s;}
+      .ppill{height:20px;background:#e8e4de;display:flex;align-items:center;justify-content:center;}
+      .ppin{width:48px;height:5px;background:#d8d4ce;border-radius:3px;}
+      .igh{padding:7px 9px;display:flex;align-items:center;gap:5px;background:#e8e4de;border-bottom:1px solid #ddd9d2;}
+      .igav{width:20px;height:20px;border-radius:50%;flex-shrink:0;border:1px solid #d0ccc5;background:linear-gradient(135deg,#8a0000,#3a0050);}
+      .igun{font-size:7px;font-weight:700;color:#111;}
+      .igvr{width:7px;height:7px;background:#4a9edd;border-radius:50%;margin-left:auto;}
+      .igim{aspect-ratio:1/1.1;overflow:hidden;background:#e0dcd4;}
+      .igim img{width:100%;height:100%;object-fit:cover;display:block;}
+      .igft{padding:7px 9px;background:#e8e4de;}
+      .iglk{font-size:8px;color:#111;font-weight:700;display:flex;align-items:center;gap:3px;}
+      .ighrt{color:#8a0000;}
+      .igcp{font-size:6.5px;color:#8a8078;margin-top:3px;line-height:1.6;}
+      .pme{margin-top:14px;text-align:center;}
+      .pev{font-family:'Cinzel',serif;font-size:7px;letter-spacing:.12em;color:#5c3c12;font-weight:600;line-height:1.7;text-transform:uppercase;}
+      .pdt{font-size:7px;color:#c0b8b0;margin-top:4px;letter-spacing:.2em;}
+      .ig-cta{text-align:center;padding:0 52px 40px;font-family:'Cinzel',serif;font-size:8px;letter-spacing:.3em;text-transform:uppercase;}
+      .ig-cta a{color:#5c3c12;text-decoration:none;transition:color .25s;}
+      .ig-cta a:hover{color:#8a0000;}
+      .awrap{padding:80px 52px;display:grid;grid-template-columns:1fr 1fr;gap:88px;}
+      .ahl{font-family:'Playfair Display',serif;font-size:clamp(20px,3vw,34px);font-weight:900;color:#111;line-height:1.1;margin-bottom:28px;}
+      .ahl em{font-style:italic;color:#8a0000;}
+      .ap{font-size:9px;color:#6a6358;line-height:2.3;letter-spacing:.04em;}
+      .ap+.ap{margin-top:16px;}
+      .facts{display:flex;flex-direction:column;gap:24px;}
+      .fact{border-left:1px solid #e0dcd4;padding-left:20px;position:relative;}
+      .fact::before{content:'';position:absolute;top:0;left:-1px;width:1px;height:8px;background:#c8a55a;}
+      .flbl{font-family:'Cinzel',serif;font-size:7px;letter-spacing:.45em;text-transform:uppercase;color:#9a7a30;margin-bottom:7px;}
+      .fval{font-size:10px;color:#111;line-height:1.8;white-space:pre-line;}
+      .femail{font-size:10px;color:#9a7a30;line-height:1.8;text-decoration:none;display:block;transition:color .25s;}
+      .femail:hover{color:#8a0000;}
+      .foot{padding:32px 52px;border-top:1px solid #e4e0d8;position:relative;display:flex;justify-content:space-between;align-items:center;}
+      .foot::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,#c8a55a22,transparent);}
+      .fn{font-family:'Playfair Display',serif;font-size:13px;font-weight:900;color:#111;}
+      .fn em{font-style:normal;color:#8a0000;}
+      .fc{font-family:'Cinzel',serif;font-size:7px;color:#c8c0b8;letter-spacing:.35em;}
+      @media(max-width:900px){
+        .nav{padding:18px 24px;}.hero-pg{padding:0 24px 64px;}.hero-vl{left:24px;}.hero-scroll{right:24px;}
+        .shead{padding:64px 24px 36px;}.oc.tl,.oc.bl{left:12px;}.oc.tr,.oc.br{right:12px;}
+        .gallery{padding:4px;}.metrics{grid-template-columns:repeat(2,1fr);margin:0 24px 36px;}
+        .tab-strip{padding:14px 4px 0;}
+        .met:nth-child(2){border-right:none;}.cgrid{grid-template-columns:repeat(2,1fr);padding:28px 24px;gap:18px;}
+        .awrap{grid-template-columns:1fr;gap:48px;padding:64px 24px;}.foot{padding:28px 24px;}
+        .gdiv{padding:0 24px;}.ig-cta{padding:0 24px 32px;}
+        .lbpanel{height:min(90vh,820px);}.lbmeta{grid-template-columns:1fr;gap:8px;}.lbcat{white-space:normal;}
+      }
+      @media(max-width:540px){.cgrid{grid-template-columns:repeat(2,1fr);gap:12px;}.metrics{grid-template-columns:repeat(2,1fr);}.nright{gap:20px;}.lightbox{padding:14px;}.lbpanel{width:100%;height:92vh;gap:10px;}.lbtop{min-height:36px;}.lbmeta{min-height:110px;}.lbstory{font-size:10px;}.lbarrow{width:34px;height:54px;font-size:36px;}}
+    `;
+
+    function Compass(){
+      const m=[0,45,90,135,180,225,270,315],i=[22.5,67.5,112.5,157.5,202.5,247.5,292.5,337.5];
+      return(<svg viewBox="0 0 200 200" style={{position:"absolute",right:"4%",bottom:"8%",width:"clamp(160px,26vw,340px)",height:"clamp(160px,26vw,340px)",opacity:.07,pointerEvents:"none"}} aria-hidden="true">
+        {[95,75,55,30,8].map(r=><circle key={r} cx="100" cy="100" r={r} stroke="#c8a55a" strokeWidth=".5" fill="none"/>)}
+        {m.map(d=>{const r=(d-90)*Math.PI/180,c=Math.cos(r),s=Math.sin(r);return(<g key={d}><line x1={100+8*c} y1={100+8*s} x2={100+93*c} y2={100+93*s} stroke="#c8a55a" strokeWidth=".3"/><line x1={100+78*c} y1={100+78*s} x2={100+93*c} y2={100+93*s} stroke="#c8a55a" strokeWidth="1.5"/></g>);})}
+        {i.map(d=>{const r=(d-90)*Math.PI/180,c=Math.cos(r),s=Math.sin(r);return<line key={d} x1={100+85*c} y1={100+85*s} x2={100+93*c} y2={100+93*s} stroke="#c8a55a" strokeWidth=".5"/>;})}
+      </svg>);
+    }
+    function Corners(){return(<><div className="oc tl"/><div className="oc tr"/><div className="oc bl"/><div className="oc br"/></>);}
+    function GoldDiv(){return(<div className="gdiv"><div className="gl"/><span className="gr">᛭</span><div className="gl"/></div>);}
+    function SiteFooter(){return(<footer className="foot"><div className="fn">Vinit Patel <em>·</em> Photography</div><div className="fc">© 2026 · Calgary, AB</div></footer>);}
+
+    function HeroStrip({onOpen}){
+      return(
+        <>
+          <div className="hero-strip-label">ᚠ Featured</div>
+          <div className="hero-strip">
+            {HERO_PHOTOS.map(p=>{
+              const wi=WILDLIFE.findIndex(w=>w.id===p.id);
+              return(
+                <div
+                  key={p.id}
+                  className="gi gi-hero"
+                  onClick={e=>onOpen(e,wi)}
+                  role="button"
+                  tabIndex="0"
+                  onKeyDown={e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();onOpen(e,wi);}}}
+                  aria-label={`Open ${p.title}`}
+                >
+                  <img src={p.img} alt={p.title} className="gph"/>
+                  <div className="hero-badge">{p.cat}</div>
+                  <div className="gov">
+                    <div className="ottl">{p.title}</div>
+                    <div className="oloc">ᛟ {p.loc}</div>
+                    <div className="ostr">{p.story}</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </>
+      );
+    }
+
+    function WildlifeGallery({onOpen}){
+      const [activeTab,setActiveTab]=useState("all");
+      const [fadeKey,setFadeKey]=useState(0);
+      const [aspects,setAspects]=useState(()=>{
+        const m={};
+        WILDLIFE.forEach(p=>{m[p.id]=p.tall?2/3:3/2;});
+        return m;
+      });
+      const [rows,setRows]=useState([]);
+      const containerRef=useRef(null);
+
+      useEffect(()=>{
+        WILDLIFE.forEach(p=>{
+          const img=new Image();
+          img.onload=()=>{
+            if(img.naturalWidth&&img.naturalHeight){
+              setAspects(prev=>({...prev,[p.id]:img.naturalWidth/img.naturalHeight}));
+            }
+          };
+          img.onerror=()=>{};
+          img.src=p.img;
+        });
+      },[]);
+
+      const filtered=useMemo(()=>{
+        if(activeTab==="all")return WILDLIFE;
+        const cats=WILDLIFE_GROUPS[activeTab]||[];
+        return WILDLIFE.filter(p=>cats.includes(p.cat));
+      },[activeTab]);
+
+      const tabCounts=useMemo(()=>{
+        const counts={all:WILDLIFE.length};
+        Object.entries(WILDLIFE_GROUPS).forEach(([key,cats])=>{
+          counts[key]=WILDLIFE.filter(p=>cats.includes(p.cat)).length;
+        });
+        return counts;
+      },[]);
+
+      const repack=useCallback(()=>{
+        const el=containerRef.current;
+        if(!el)return;
+        const cw=el.clientWidth-2*GAP;
+        if(!cw)return;
+        const bp=window.innerWidth>900?340:window.innerWidth>540?230:165;
+        setRows(packRows(filtered,aspects,cw,bp));
+      },[filtered,aspects]);
+
+      useLayoutEffect(()=>{
+        repack();
+        const el=containerRef.current;
+        if(!el)return;
+        const ro=new ResizeObserver(repack);
+        ro.observe(el);
+        return()=>ro.disconnect();
+      },[repack]);
+
+      const handleTab=(tab)=>{
+        setActiveTab(tab);
+        setFadeKey(k=>k+1);
+      };
+
+      return(
+        <>
+          <HeroStrip onOpen={onOpen}/>
+          <div className="tab-strip">
+            {TABS.map(t=>(
+              <button
+                key={t.id}
+                className={`tab-btn${activeTab===t.id?" tab-act":""}`}
+                onClick={()=>handleTab(t.id)}
+              >
+                {t.label}
+                <span className="tab-count">{tabCounts[t.id]}</span>
+              </button>
+            ))}
+          </div>
+          <div className="gallery" ref={containerRef}>
+            <div key={fadeKey} className="gallery-fade">
+              {rows.map((row,ri)=>(
+                <div key={ri} className="gj-row" style={{height:row.height+"px"}}>
+                  {row.items.map((p,ii)=>{
+                    const wi=WILDLIFE.findIndex(w=>w.id===p.id);
+                    return(
+                      <div
+                        key={p.id}
+                        className="gi"
+                        style={{width:row.widths[ii]+"px",height:"100%"}}
+                        onClick={e=>onOpen(e,wi)}
+                        role="button"
+                        tabIndex="0"
+                        onKeyDown={e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();onOpen(e,wi);}}}
+                        aria-label={`Open ${p.title}`}
+                      >
+                        <img src={p.img} alt={p.title} className="gph"/>
+                        <div className="gov">
+                          <div className="ocat">{p.cat}</div>
+                          <div className="ottl">{p.title}</div>
+                          <div className="oloc">ᛟ {p.loc}</div>
+                          <div className="ostr">{p.story}</div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
+      );
+    }
+
+    function PhotoLightbox({photo,origin,onClose,onPrev,onNext}){
+      const titleRef=useRef(null),metaRef=useRef(null),imageRef=useRef(null);
+      const [morph,setMorph]=useState({ready:false,style:{}});
+      const [closing,setClosing]=useState(false);
+      const closeTimerRef=useRef(null);
+
+      const triggerClose=useCallback(()=>{
+        if(closing)return;
+        setClosing(true);
+        closeTimerRef.current=setTimeout(()=>onClose(),420);
+      },[closing,onClose]);
+
+      useEffect(()=>()=>clearTimeout(closeTimerRef.current),[]);
+
+      useEffect(()=>{
+        setMorph({ready:false,style:{}});
+        setClosing(false);
+        const frame=requestAnimationFrame(()=>{
+          const tr=titleRef.current?.getBoundingClientRect();
+          const mr=metaRef.current?.getBoundingClientRect();
+          const ir=imageRef.current?.getBoundingClientRect();
+          if(!tr||!mr||!ir){setMorph({ready:true,style:{}});return;}
+          const style={};
+          if(origin?.title){
+            style["--title-x"]=`${origin.title.left-tr.left}px`;
+            style["--title-y"]=`${origin.title.top-tr.top}px`;
+            style["--title-scale"]=clamp(origin.title.width/tr.width,.12,.55);
+          }
+          if(origin?.meta){
+            style["--meta-x"]=`${origin.meta.left-mr.left}px`;
+            style["--meta-y"]=`${origin.meta.top-mr.top}px`;
+            style["--meta-scale"]=clamp(origin.meta.width/mr.width,.35,.85);
+          }
+          if(origin?.image){
+            style["--image-x"]=`${origin.image.left-ir.left}px`;
+            style["--image-y"]=`${origin.image.top-ir.top}px`;
+            style["--image-scale"]=clamp(origin.image.width/ir.width,.12,1);
+          }
+          setMorph({ready:true,style});
+        });
+        return()=>cancelAnimationFrame(frame);
+      },[photo,origin]);
+
+      useEffect(()=>{
+        const onKey=e=>{
+          if(e.key==="Escape"){e.preventDefault();triggerClose();}
+          if(e.key==="ArrowLeft"&&!closing){e.preventDefault();onPrev();}
+          if(e.key==="ArrowRight"&&!closing){e.preventDefault();onNext();}
+        };
+        window.addEventListener("keydown",onKey);
+        return()=>window.removeEventListener("keydown",onKey);
+      },[triggerClose,closing,onPrev,onNext]);
+
+      const classes=[
+        "lightbox",
+        morph.ready?"ready":"",
+        origin&&!closing?"morphing":"",
+        closing?"closing":"",
+      ].filter(Boolean).join(" ");
+
+      return(
+        <div className={classes} role="dialog" aria-modal="true" aria-label={photo.title} onClick={triggerClose} style={morph.style}>
+          <button className="lbarrow prev" type="button" onClick={e=>{e.stopPropagation();if(!closing)onPrev();}} aria-label="Previous photo">‹</button>
+          <button className="lbarrow next" type="button" onClick={e=>{e.stopPropagation();if(!closing)onNext();}} aria-label="Next photo">›</button>
+          <div className="lbpanel">
+            <div className="lbtop">
+              <div className="lbtitle" ref={titleRef}>{photo.title}</div>
+            </div>
+            <div className="lbphoto"><img ref={imageRef} src={photo.img} alt={photo.title} onClick={e=>e.stopPropagation()}/></div>
+            <div className="lbmeta" ref={metaRef}>
+              <div className="lbcat">{photo.cat}</div>
+              <div className="lbcopy">
+                <div className="lbloc">ᛟ {photo.loc}</div>
+                <div className="lbstory">{photo.story}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function Portfolio(){
+      const [activePage,setActivePage]=useState("hero");
+      const [nameStyle,setNameStyle]=useState({display:"none"});
+      const [openPhoto,setOpenPhoto]=useState(null);
+      const scrollerRef=useRef(null),heroAnchRef=useRef(null),navGhostRef=useRef(null),rafRef=useRef(null);
+
+      useEffect(()=>{
+        const dismiss=()=>{const l=document.getElementById('loading');if(!l)return;l.classList.add('out');setTimeout(()=>l.remove(),800);};
+        if(document.fonts?.ready)document.fonts.ready.then(dismiss);
+        setTimeout(dismiss,1500);
+      },[]);
+
+      const onScroll=()=>{
+        const sc=scrollerRef.current;if(!sc)return;
+        const st=sc.scrollTop,ph=window.innerHeight;
+        const idx=Math.min(Math.round(st/ph),PAGE_ORDER.length-1);
+        setActivePage(PAGE_ORDER[idx]);
+        const he=Math.min(1,st/ph),ep2=ease(he);
+        document.body.style.background=`rgb(${Math.round(lerp(28,248,ep2))},${Math.round(lerp(19,246,ep2))},${Math.round(lerp(9,242,ep2))})`;
+        const a=heroAnchRef.current,g=navGhostRef.current;if(!a||!g)return;
+        const hr=a.getBoundingClientRect(),nr=g.getBoundingClientRect();
+        const hFs=parseFloat(getComputedStyle(a).fontSize),nFs=parseFloat(getComputedStyle(g).fontSize);
+        const prog=Math.min(1,Math.max(0,st/(ph*.8))),ep=ease(prog);
+        setNameStyle({position:"fixed",zIndex:200,top:`${lerp(hr.top,nr.top,ep)}px`,left:`${lerp(hr.left,nr.left,ep)}px`,fontSize:`${lerp(hFs,nFs,ep)}px`,lineHeight:`${lerp(.95,1.3,ep)}`,fontFamily:"'Playfair Display',serif",fontWeight:900,letterSpacing:"-.025em",whiteSpace:"nowrap",userSelect:"none",color:`rgb(${Math.round(lerp(237,248,ep))},${Math.round(lerp(227,248,ep))},${Math.round(lerp(208,242,ep))})`,pointerEvents:ep>.75?"all":"none",cursor:ep>.75?"pointer":"default"});
+      };
+
+      useEffect(()=>{
+        const sc=scrollerRef.current;if(!sc)return;
+        const h=()=>{if(rafRef.current)cancelAnimationFrame(rafRef.current);rafRef.current=requestAnimationFrame(onScroll);};
+        sc.addEventListener("scroll",h,{passive:true});
+        setTimeout(onScroll,150);
+        if(document.fonts?.ready)document.fonts.ready.then(onScroll);
+        return()=>sc.removeEventListener("scroll",h);
+      },[]);
+      useEffect(()=>{window.addEventListener("resize",onScroll);return()=>window.removeEventListener("resize",onScroll);},[]);
+      useEffect(()=>{
+        const sc=scrollerRef.current;if(!sc)return;
+        sc.style.overflowY=openPhoto?"hidden":"scroll";
+        return()=>{sc.style.overflowY="scroll";};
+      },[openPhoto]);
+
+      const goTo=useCallback(p=>{
+        const sc=scrollerRef.current;if(!sc)return;
+        const i=PAGE_ORDER.indexOf(p);
+        const targetY=i*window.innerHeight;
+        const startY=sc.scrollTop;
+        if(Math.abs(targetY-startY)<2)return;
+        // reset inner-page scroll positions so we always land at the top
+        sc.querySelectorAll('.pg.inner').forEach(el=>{el.scrollTop=0;});
+        // disable CSS snap so it doesn't fight the animation
+        sc.style.scrollSnapType='none';
+        const dur=560;
+        const t0=performance.now();
+        const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+        const tick=now=>{
+          const prog=Math.min((now-t0)/dur,1);
+          sc.scrollTop=startY+(targetY-startY)*ease(prog);
+          if(prog<1){requestAnimationFrame(tick);}
+          else{sc.scrollTop=targetY;sc.style.scrollSnapType='';}
+        };
+        requestAnimationFrame(tick);
+      },[]);
+      const closePhoto=()=>setOpenPhoto(null);
+      const showPrevPhoto=()=>setOpenPhoto(p=>(p?{index:(p.index-1+WILDLIFE.length)%WILDLIFE.length,origin:null}:p));
+      const showNextPhoto=()=>setOpenPhoto(p=>(p?{index:(p.index+1)%WILDLIFE.length,origin:null}:p));
+      const openPhotoFromCard=(e,i)=>{
+        const card=e.currentTarget;
+        const cardR=card.getBoundingClientRect();
+        const imgR=card.querySelector(".gph")?.getBoundingClientRect();
+        setOpenPhoto({index:i,origin:{
+          title:{top:cardR.top,left:cardR.left,width:cardR.width,height:cardR.height},
+          meta:toRect(card.querySelector(".gov")?.getBoundingClientRect()),
+          image:toRect(imgR)
+        }});
+      };
+
+      const FACTS=[
+        {l:"Based in",v:"Calgary, AB · Canada"},
+        {l:"Camera",v:"Nikon DSLR"},
+        {l:"Corporate Experience",v:"Social Media Assistant\nLaurentian University · 2023–2024"},
+        {l:"Locations Covered",v:"Calgary · Banff · Sudbury · Algoma\nKasol, Himachal Pradesh, India"},
+        {l:"Content Languages",v:"English · French"},
+        {l:"Contact",v:"vinitpatel932@gmail.com",email:true},
+      ];
+
+      return(<>
+        <style>{CSS}</style>
+        <div className="grain" aria-hidden="true"/>
+        <div style={nameStyle} onClick={()=>goTo("hero")} aria-hidden="true">Vinit Patel</div>
+        <nav className="nav">
+          <div style={{display:"flex",alignItems:"center"}}>
+            <span ref={navGhostRef} className="nghost" onClick={()=>goTo("hero")} style={{pointerEvents:"all",cursor:"pointer"}}>Vinit Patel</span>
+            <a href="mailto:vinitpatel932@gmail.com" className="nav-email">vinitpatel932@gmail.com</a>
+          </div>
+          <div className="nright">
+            {["wildlife","corporate","about"].map(p=>(<button key={p} className={`nbtn${activePage===p?" nact":""}`} onClick={()=>goTo(p)}>{p}</button>))}
+          </div>
+        </nav>
+        <div ref={scrollerRef} className="scroller">
+
+          <section className="pg hero-pg">
+            <div className="hero-amb" aria-hidden="true"/><div className="hero-vl" aria-hidden="true"/>
+            <Compass/>
+            <p className="hero-eye">ᚠ Wildlife Photography · Social Media · Calgary, AB</p>
+            <h1 ref={heroAnchRef} className="hero-anch" aria-hidden="true">Vinit Patel</h1>
+            <p className="hero-tag">Field photographer &amp; content creator<br/>From the Rockies to the Himalayas</p>
+            <div className="hero-div"><div className="hdl"/><span className="hdr">᛭</span><div className="hdl r"/></div>
+            <div className="hero-cta">
+              <button className="hcbtn" onClick={()=>goTo("wildlife")}>Wildlife</button>
+              <span className="hcsep">·</span>
+              <button className="hcbtn" onClick={()=>goTo("corporate")}>Corporate</button>
+              <span className="hcsep">·</span>
+              <button className="hcbtn" onClick={()=>goTo("about")}>About</button>
+            </div>
+            <div className="hero-scroll" aria-hidden="true"><span>Scroll</span><div className="sbar"/></div>
+          </section>
+
+          <section className="pg inner">
+            <div className="shead"><Corners/>
+              <div className="seye">ᚢ 01 — Personal Work</div>
+              <h2 className="stitle">Wildlife &amp; Nature</h2>
+              <p className="sdesc">Field photography across Canada and India — from Calgary's urban sanctuaries to the Himalayan foothills. Every frame captured on personal time, on foot, in the wild.</p>
+            </div>
+            <GoldDiv/>
+            <WildlifeGallery onOpen={openPhotoFromCard}/>
+            <GoldDiv/><SiteFooter/>
+          </section>
+
+          <section className="pg inner">
+            <div className="shead">
+              <div className="seye" style={{color:"#c8a55a99"}}>02 — Professional Work</div>
+              <h2 className="stitle">Laurentian University</h2>
+              <p className="sdesc">Social Media Assistant · September 2023 – April 2024 · Sudbury, ON<br/>30+ curated Instagram posts plus ongoing content across Facebook and TikTok — bilingual photography, caption writing, event coverage, and scheduling for a verified institutional account.</p>
+            </div>
+            <div className="metrics">
+              {[{n:"30",a:"+",l:"Instagram Posts"},{n:"3",a:"",l:"Platforms"},{n:"8",a:"mo",l:"Duration"},{n:"2",a:"",l:"Languages"}].map((m,i)=>(<div className="met" key={i}><div className="mnum">{m.n}<span>{m.a}</span></div><div className="mlbl">{m.l}</div></div>))}
+            </div>
+            <div className="cgrid">
+              {CORPORATE.map(p=>(<a className="pw" key={p.id} href={p.link||IG} target="_blank" rel="noopener noreferrer">
+                <div className="ph">
+                  <div className="ppill"><div className="ppin"/></div>
+                  <div className="igh"><div className="igav"/><div className="igun">laurentianu</div><div className="igvr"/></div>
+                  <div className="igim"><img src={p.img} alt={p.event}/></div>
+                  <div className="igft"><div className="iglk"><span className="ighrt">♥</span> {p.likes.toLocaleString()}</div><div className="igcp"><strong>laurentianu</strong> · {p.date}</div></div>
+                </div>
+                <div className="pme"><div className="pev">{p.event}</div><div className="pdt">{p.date}</div></div>
+              </a>))}
+            </div>
+            <div className="ig-cta"><a href={IG} target="_blank" rel="noopener noreferrer">ᛟ View full work @laurentianu on Instagram</a></div>
+            <GoldDiv/><SiteFooter/>
+          </section>
+
+          <section className="pg inner">
+            <div className="shead"><Corners/>
+              <div className="seye">ᛟ 03 — The Photographer</div>
+              <h2 className="stitle">About</h2>
+            </div>
+            <div className="awrap">
+              <div>
+                <h3 className="ahl">Behind<br/>the <em>lens.</em></h3>
+                <p className="ap">Vinit Patel is a wildlife photographer and social media content creator based in Calgary, Alberta. His work spans the urban sanctuaries of Calgary's river pathways, the alpine wilderness of Banff National Park, the boreal forests of Northern Ontario, and the mountain rivers of Himachal Pradesh, India.</p>
+                <p className="ap">Trained through practice rather than institution, Vinit's photography is defined by patience, ecological curiosity, and a cinematic eye developed across thousands of hours in the field. His corporate work at Laurentian University demonstrated that same eye applied to institutional storytelling — bilingual, culturally sensitive, and engagement-driven.</p>
+              </div>
+              <div className="facts">
+                {FACTS.map((f,i)=>(<div className="fact" key={i}>
+                  <div className="flbl">{f.l}</div>
+                  {f.email?<a href={`mailto:${f.v}`} className="femail">{f.v}</a>:<div className="fval">{f.v}</div>}
+                </div>))}
+              </div>
+            </div>
+            <GoldDiv/><SiteFooter/>
+          </section>
+
+        </div>
+        {openPhoto&&<PhotoLightbox photo={WILDLIFE[openPhoto.index]} origin={openPhoto.origin} onClose={closePhoto} onPrev={showPrevPhoto} onNext={showNextPhoto}/>}
+      </>);
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<Portfolio/>);
+  </script>
+</body>
+</html>
